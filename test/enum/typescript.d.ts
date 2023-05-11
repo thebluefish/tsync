@@ -19,9 +19,7 @@ type Message__RequestLongTake = {
 /** The default enum conversion uses external tagging */
 type ExternalMessage =
   /** Per Enum case Docs One */
-  | {
-      "UnitCaseLeft": {}
-    }
+  | { "UnitCaseLeft": {} }
   /** Per Enum case Docs Two */
   | {
       "RequestLongTake": {
@@ -31,7 +29,8 @@ type ExternalMessage =
       }
     }
   /** Newtype variant with exactly one variable */
-  | { "Response": Response };
+  | { "Response": Response }
+;
 
 interface Response {
   id: string;

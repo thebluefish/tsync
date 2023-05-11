@@ -305,6 +305,12 @@ fn make_externally_tagged_variant(
                 .types
                 .push_str(&format!(" }}"));
         }
+        else if variant.fields.is_empty() {
+            state.types.push_str(&format!(
+                "  | {{ \"{}\": {{}} }}",
+                field_name,
+            ));
+        }
         else {
             // add discriminant
             state.types.push_str(&format!(
@@ -312,20 +318,14 @@ fn make_externally_tagged_variant(
                 utils::build_indentation(6),
                 field_name,
             ));
-            let prepend;
-            if variant.fields.is_empty() {
-                prepend = "".into();
-            } else {
-                prepend = utils::build_indentation(6);
-                state.types.push('\n');
-                super::structs::process_fields(variant.fields, state, 8);
-            }
+            state.types.push('\n');
+            super::structs::process_fields(variant.fields, state, 8);
             state
                 .types
-                .push_str(&format!("{}}}\n{}}}", prepend, utils::build_indentation(4)));
+                .push_str(&format!("{}}}\n{}}}", utils::build_indentation(6), utils::build_indentation(4)));
         }
     }
-    state.types.push_str(";\n");
+    state.types.push_str("\n;\n");
 }
 
 fn to_enum_case(val: impl Into<Option<String>>) -> Option<Case> {
