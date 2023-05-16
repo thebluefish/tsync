@@ -307,7 +307,8 @@ fn make_externally_tagged_variant(
         }
         else if variant.fields.is_empty() {
             state.types.push_str(&format!(
-                "  | {{ \"{}\": {{}} }}",
+                "  | {{ \"{}\": {} }}",
+                field_name,
                 field_name,
             ));
         }
