@@ -11,9 +11,10 @@ impl super::ToTypescript for syn::ItemStruct {
         state.write_comments(&comments, 0);
 
         state.types.push_str(&format!(
-            "{export}interface {interface_name}{generics} {{\n",
+            "{export}interface {interface_name}{generics} {{{has_fields}",
             interface_name = self.ident,
-            generics = utils::extract_struct_generics(self.generics.clone())
+            generics = utils::extract_struct_generics(self.generics.clone()),
+            has_fields = if self.fields.is_empty() { "" } else { "\n"},
         ));
         process_fields(self.fields, state, 2);
         state.types.push('}');
