@@ -75,18 +75,39 @@ fn make_enum(
 ) {
     let export = if uses_typeinterface { "" } else { "export " };
     state.types.push_str(&format!(
-        "{export}type {interface_name} =\n{space}",
+        "{export}type {interface_name} =",
         interface_name = exported_struct.ident,
-        space = utils::build_indentation(1)
     ));
 
+    const MAX_WIDTH: usize = 72;
+
+    let mut single_line = true;
+    let mut buffer: String = String::new();
     for variant in exported_struct.variants {
         let field_name = if let Some(casing) = casing {
             variant.ident.to_string().to_case(casing)
         } else {
             variant.ident.to_string()
         };
-        state.types.push_str(&format!(" | \"{}\"", field_name));
+        let fill = format!(" | \"{}\"", field_name);
+        buffer.push_str(&fill);
+
+        if buffer.len() >= MAX_WIDTH {
+            if single_line {
+                state.types.push('\n');
+            }
+            state.types.push_str(&buffer);
+            state.types.push('\n');
+            buffer.clear();
+            single_line = false;
+        }
+    }
+
+    if !buffer.is_empty() {
+        state.types.push_str(&buffer);
+        if !single_line {
+            state.types.push('\n');
+        }
     }
 
     state.types.push_str(";\n");
